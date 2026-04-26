@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Journal &middot; NVitschDEV &mdash; Notes from the workbench</title>
+  <meta name="description" content="Personal journal by Omar Hozdic (NVitschDEV) &mdash; build logs, Linux notes, 3D &amp; video experiments." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+/* ════════════════════════════════════════════════════════════════════
+   NVitschDEV Blog — Editorial Warm-Noir Design System
+   ════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --background: hsl(240, 14%, 5%);
+  --bg-1: hsl(240, 14%, 8%);
+  --bg-2: hsl(240, 14%, 11%);
+  --foreground: hsl(38, 47%, 92%);
+
+  --primary: hsl(35, 73%, 66%);
+  --primary-glow: hsla(35, 73%, 66%, 0.28);
+
+  --muted: hsl(240, 14%, 11%);
+  --muted-foreground: hsl(33, 8%, 57%);
+  --muted-foreground-deep: hsl(36, 7%, 33%);
+
+  --accent: hsl(35, 73%, 66%);
+  --accent-2: hsl(201, 39%, 60%);
+  --accent-3: hsl(13, 64%, 60%);
+
+  --border: hsla(38, 47%, 92%, 0.08);
+  --border-hover: hsla(35, 73%, 66%, 0.45);
+  --input: hsl(240, 14%, 11%);
+
+  --glass: hsla(38, 88%, 97%, 0.025);
+  --glass-b: hsla(38, 88%, 97%, 0.045);
+
+  --radius: 0.875rem;
+  --transition: 0.4s cubic-bezier(0.22, 0.61, 0.36, 1);
+
+  --font-display: 'Fraunces', 'Times New Roman', serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+}
+
+/* ── Reset & Base ───────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; border-color: var(--border); }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-body);
+  font-weight: 400;
+  line-height: 1.65;
+  letter-spacing: -0.005em;
+  overflow-x: hidden;
+  font-feature-settings: "ss01", "cv11";
+  position: relative;
+}
+
+::selection { background: var(--accent); color: var(--background); }
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--background); }
+::-webkit-scrollbar-thumb { background: var(--bg-2); border-radius: 4px; border: 2px solid var(--background); }
+::-webkit-scrollbar-thumb:hover { background: var(--muted-foreground-deep); }
+
+/* Background grain + horizon glow */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -10%, hsla(35, 73%, 66%, 0.08), transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 110%, hsla(201, 39%, 60%, 0.06), transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.96 0 0 0 0 0.93 0 0 0 0 0.88 0 0 0 0.4 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/></svg>");
+  opacity: 0.04;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Layout ─────────────────────────────────────────────────────────── */
+.container-editorial {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 32px;
+  position: relative;
+  z-index: 1;
+}
+.max-w-3xl { max-width: 48rem; }
+.max-w-2xl { max-width: 42rem; }
+
+.pt-32 { padding-top: 8rem; }
+.pb-32 { padding-bottom: 8rem; }
+.pt-40 { padding-top: 10rem; }
+.pt-12 { padding-top: 3rem; }
+.mb-8 { margin-bottom: 2rem; }
+.mb-6 { margin-bottom: 1.5rem; }
+.mb-10 { margin-bottom: 2.5rem; }
+.mb-24 { margin-bottom: 6rem; }
+.mb-16 { margin-bottom: 4rem; }
+.mt-10 { margin-top: 2.5rem; }
+.mt-32 { margin-top: 8rem; }
+.mt-24 { margin-top: 6rem; }
+
+.hidden { display: none !important; }
+.text-center { text-align: center; }
+.justify-center { justify-content: center; }
+
+/* ── Orbs ───────────────────────────────────────────────────────────── */
+.orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(140px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.12;
+}
+.orb-1 { width: 560px; height: 560px; background: var(--accent); top: -180px; right: -160px; }
+.orb-2 { width: 480px; height: 480px; background: var(--accent-2); bottom: 8%; left: -160px; }
+
+/* ── Nav ────────────────────────────────────────────────────────────── */
+#site-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: hsla(240, 14%, 5%, 0.7);
+  border-bottom: 1px solid hsla(38, 47%, 92%, 0.06);
+}
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+#nav-logo {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.125rem;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  color: var(--foreground);
+  text-decoration: none;
+  transition: color var(--transition);
+}
+#nav-logo:hover { color: var(--accent); }
+.nav-logo-accent { font-style: normal; font-weight: 400; color: var(--accent); }
+.nav-logo-sub {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--muted-foreground-deep);
+  margin-left: 0.5rem;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+}
+.nav-links { display: flex; align-items: center; gap: 2rem; }
+.nav-link {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  text-decoration: none;
+  text-transform: lowercase;
+  letter-spacing: 0.1em;
+  transition: color var(--transition);
+}
+.nav-link:hover { color: var(--accent); }
+@media (max-width: 640px) { .nav-link-github { display: none; } }
+
+/* ── Typography ─────────────────────────────────────────────────────── */
+.display-heading {
+  font-family: var(--font-display);
+  font-weight: 300;
+  letter-spacing: -0.045em;
+  line-height: 0.95;
+}
+.display-italic {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+}
+.accent-gradient-text {
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  background-image: linear-gradient(115deg, var(--accent), var(--accent-3) 60%, var(--accent));
+}
+.h1-index { font-size: clamp(2.5rem, 7vw, 5rem); max-width: 56rem; }
+.text-5xl { font-size: 3rem; }
+.text-muted { color: var(--muted-foreground); }
+.text-fore { color: var(--foreground); }
+.text-accent { color: var(--accent); }
+.text-deep { color: var(--muted-foreground-deep); }
+.text-lg { font-size: 1.125rem; line-height: 1.75; }
+.font-mono { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.1em; }
+
+/* ── Section label ──────────────────────────────────────────────────── */
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  color: var(--accent);
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-label::before {
+  content: '';
+  width: 24px;
+  height: 1px;
+  background: var(--accent);
+  display: inline-block;
+}
+.section-label-row { display: flex; align-items: center; gap: 1rem; }
+
+/* ── Glass tag ──────────────────────────────────────────────────────── */
+.glass-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--muted-foreground);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  border: 1px solid hsla(38, 47%, 92%, 0.08);
+  border-radius: 100px;
+  padding: 7px 16px 7px 14px;
+  background: hsla(38, 88%, 97%, 0.025);
+  backdrop-filter: blur(8px);
+}
+.glass-tag::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 10px hsla(35, 73%, 66%, 0.5);
+  animation: pulse-dot 2.4s ease-in-out infinite;
+}
+
+/* ── Index meta ─────────────────────────────────────────────────────── */
+.index-meta {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--muted-foreground-deep);
+  letter-spacing: 0.1em;
+}
+.meta-sep { height: 1px; width: 2rem; background: hsla(38, 47%, 92%, 0.08); }
+
+/* ── Post card ──────────────────────────────────────────────────────── */
+.posts-grid { display: grid; gap: 1.5rem; }
+
+.post-card {
+  display: block;
+  background: var(--bg-1);
+  border: 1px solid hsla(38, 47%, 92%, 0.08);
+  border-radius: var(--radius);
+  padding: 2.5rem;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition);
+  cursor: pointer;
+}
+.post-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, hsla(35, 73%, 66%, 0.04), transparent 60%);
+  opacity: 0;
+  transition: opacity var(--transition);
+  pointer-events: none;
+}
+.post-card:hover {
+  border-color: hsla(35, 73%, 66%, 0.45);
+  transform: translateY(-3px);
+  box-shadow: 0 24px 48px -24px hsla(0, 0%, 0%, 0.6);
+}
+.post-card:hover::before { opacity: 1; }
+.post-card:hover .card-title { color: var(--accent); }
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+.card-index {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--muted-foreground-deep);
+  letter-spacing: 0.1em;
+}
+.card-sep { height: 1px; flex: 1; background: hsla(38, 47%, 92%, 0.08); }
+.card-date {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  letter-spacing: 0.1em;
+}
+.card-title {
+  font-family: var(--font-display);
+  font-weight: 300;
+  letter-spacing: -0.045em;
+  line-height: 0.95;
+  font-size: clamp(1.75rem, 4vw, 2.25rem);
+  margin-bottom: 1rem;
+  color: var(--foreground);
+  transition: color 0.5s ease;
+}
+.card-excerpt {
+  color: var(--muted-foreground);
+  font-size: 1.0625rem;
+  line-height: 1.75;
+  margin-bottom: 1.5rem;
+  max-width: 42rem;
+}
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.card-tags { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.tag {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--muted-foreground);
+  border: 1px solid hsla(38, 47%, 92%, 0.08);
+  border-radius: 100px;
+  padding: 4px 12px;
+  text-transform: lowercase;
+  letter-spacing: 0.1em;
+}
+.card-read {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--muted-foreground-deep);
+  letter-spacing: 0.1em;
+}
+
+/* ── Footer ─────────────────────────────────────────────────────────── */
+.footer-row {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+@media (min-width: 640px) {
+  .footer-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+.border-top { border-top: 1px solid hsla(38, 47%, 92%, 0.08); }
+
+/* ── Post page ──────────────────────────────────────────────────────── */
+.post-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--muted-foreground);
+  letter-spacing: 0.1em;
+}
+.post-meta-sep { height: 1px; width: 1.5rem; background: hsla(38, 47%, 92%, 0.12); }
+.post-title {
+  font-family: var(--font-display);
+  font-weight: 300;
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+  font-size: clamp(2rem, 6vw, 3.75rem);
+  margin-bottom: 2rem;
+}
+.post-excerpt {
+  color: var(--muted-foreground);
+  font-size: 1.25rem;
+  line-height: 1.75;
+  margin-bottom: 2rem;
+}
+.post-tags { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+
+.h-divider { height: 1px; background: hsla(38, 47%, 92%, 0.08); }
+.mb-16 { margin-bottom: 4rem; }
+
+/* ── Pagination ─────────────────────────────────────────────────────── */
+.pagination-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.pagination-link { display: block; text-decoration: none; }
+.pagination-label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--muted-foreground-deep);
+  letter-spacing: 0.1em;
+  text-transform: lowercase;
+  margin-bottom: 0.5rem;
+}
+.pagination-title {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.125rem;
+  color: var(--foreground);
+  transition: color var(--transition);
+}
+.pagination-link:hover .pagination-title { color: var(--accent); }
+.pagination-next { text-align: right; }
+
+/* ── 404 ────────────────────────────────────────────────────────────── */
+.link-back {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  text-decoration: none;
+  text-transform: lowercase;
+  letter-spacing: 0.1em;
+  transition: color var(--transition);
+}
+.link-back:hover { color: var(--foreground); }
+
+/* ── Prose editorial ────────────────────────────────────────────────── */
+.prose-editorial {
+  color: var(--foreground);
+  font-size: 1.15rem;
+  line-height: 1.8;
+}
+.prose-editorial > * + * { margin-top: 1.4em; }
+.prose-editorial h2 {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 2rem;
+  margin-top: 2.2em;
+  letter-spacing: -0.02em;
+  color: var(--foreground);
+}
+.prose-editorial h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.5rem;
+  margin-top: 2em;
+  color: var(--foreground);
+}
+.prose-editorial a { color: var(--accent); text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1px; transition: color var(--transition); }
+.prose-editorial a:hover { color: var(--foreground); }
+.prose-editorial strong { color: var(--foreground); font-weight: 600; }
+.prose-editorial em { font-family: var(--font-display); font-style: italic; }
+.prose-editorial code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background: var(--bg-2);
+  color: var(--accent);
+  padding: 2px 8px;
+  border-radius: 6px;
+  border: 1px solid hsla(38, 47%, 92%, 0.08);
+}
+.prose-editorial pre {
+  background: var(--bg-2);
+  border: 1px solid hsla(38, 47%, 92%, 0.08);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  overflow-x: auto;
+  font-size: 0.9rem;
+}
+.prose-editorial pre code { background: transparent; border: 0; padding: 0; color: var(--foreground); }
+.prose-editorial blockquote {
+  border-left: 2px solid var(--accent);
+  padding-left: 24px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.25rem;
+  color: var(--muted-foreground);
+}
+.prose-editorial ul, .prose-editorial ol { padding-left: 1.4em; }
+.prose-editorial li { margin-top: 0.5em; }
+.prose-editorial hr { border: 0; border-top: 1px solid hsla(38, 47%, 92%, 0.08); margin: 3em 0; }
+.prose-editorial img { border-radius: var(--radius); border: 1px solid hsla(38, 47%, 92%, 0.08); }
+
+/* ── Animations ─────────────────────────────────────────────────────── */
+.anim-fade-up { animation: fade-up 0.8s cubic-bezier(0.22, 0.61, 0.36, 1) both; }
+.anim-fade-in { animation: fade-in 0.6s ease-out both; }
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+  </style>
+</head>
+<body>
+  <div class="orb orb-1" aria-hidden="true"></div>
+  <div class="orb orb-2" aria-hidden="true"></div>
+
+  <nav id="site-nav">
+    <div class="container-editorial nav-inner">
+      <a href="#" id="nav-logo" onclick="showIndex(); return false;">
+        NVitsch<span class="nav-logo-accent">DEV</span><span class="nav-logo-sub">/ journal</span>
+      </a>
+      <div class="nav-links">
+        <a href="#" id="nav-back" onclick="showIndex(); return false;" class="nav-link hidden">← all entries</a>
+        <a href="https://github.com/NVitschDEV" target="_blank" rel="noopener noreferrer" class="nav-link nav-link-github">github</a>
+      </div>
+    </div>
+  </nav>
+
+  <div id="page-index">
+    <main class="pt-32 pb-32">
+      <header class="container-editorial mb-24 anim-fade-up">
+        <div class="glass-tag mb-8">Journal · live entries</div>
+        <h1 class="display-heading h1-index mb-8">
+          Notes from the <span class="display-italic accent-gradient-text">workbench</span>.
+        </h1>
+        <p class="text-muted text-lg max-w-2xl">
+          A working journal by <span class="text-fore">Omar Hozdic</span> — what I'm
+          building, breaking, and reading. Published when there's something worth saying.
+        </p>
+        <div class="index-meta mt-10">
+          <span id="entry-count"></span>
+          <span class="meta-sep"></span>
+          <span>since 2026</span>
+        </div>
+      </header>
+      <section class="container-editorial">
+        <div class="section-label-row mb-10 anim-fade-up">
+          <span class="section-label">// entries</span>
+        </div>
+        <div id="posts-grid" class="posts-grid"></div>
+      </section>
+      <footer class="container-editorial mt-32 pt-12 border-top footer-row">
+        <p class="font-mono text-deep">// crafted on arch linux · powered by caffeine</p>
+        <p class="font-mono text-deep" id="footer-year"></p>
+      </footer>
+    </main>
+  </div>
+
+  <div id="page-post" class="hidden">
+    <article class="pt-32 pb-32">
+      <header id="post-header" class="container-editorial max-w-3xl mb-16 anim-fade-up"></header>
+      <div class="container-editorial max-w-3xl anim-fade-in">
+        <div class="h-divider mb-16"></div>
+        <div id="post-body" class="prose-editorial"></div>
+      </div>
+      <nav id="post-pagination" class="container-editorial max-w-3xl mt-24 pt-12 border-top pagination-grid"></nav>
+    </article>
+  </div>
+
+  <div id="page-404" class="hidden">
+    <main class="container-editorial pt-40 pb-32 text-center">
+      <p class="section-label justify-center mb-6">// 404</p>
+      <h1 class="display-heading text-5xl mb-6">Entry not found.</h1>
+      <p class="text-muted mb-10">That post either doesn't exist yet or got lost in a bad rebase.</p>
+      <a href="#" onclick="showIndex(); return false;" class="font-mono text-accent link-back">← back to journal</a>
+    </main>
+  </div>
+
+  <script>
+// Blog posts — edit this array to add or update entries.
+
+const posts = [
+  {
+    slug: "arch-survived-the-update",
+    title: "Arch survived the update. Barely.",
+    excerpt: "Ran pacman -Syu after two weeks of procrastinating. Everything broke. Then it didn't. A story in three acts.",
+    date: "2026-04-26",
+    readingMinutes: 4,
+    tags: ["linux", "arch", "pacman"],
+    content: "Two weeks of ignored update notifications. The little red dot mocking me every time I opened a terminal. Fine. Let's do it.\n\n## Act I — The Update\n\n```bash\nsudo pacman -Syu\n```\n\n316 packages. Of course it's 316 packages. I made a coffee.\n\n## Act II — The Breaking\n\nBooted into a blank screen. Classic. Turns out **linux-firmware** and my GPU driver had a disagreement. The kind of disagreement where neither side talks to the other and you're left staring at a cursor that doesn't blink.\n\nDropped to a TTY, which still worked — small mercies.\n\n```bash\nsudo pacman -S nvidia-dkms linux-headers\nsudo mkinitcpio -P\n```\n\n> When in doubt, rebuild the initramfs. This is the way.\n\n## Act III — The Not Breaking\n\nRebooted. Desktop came up. Everything fine. The two weeks of dread amounted to about 40 minutes of actual work.\n\n## Lessons\n\n- **Don't ignore updates for two weeks.** You know this. You keep forgetting it.\n- Keep a live USB nearby. Not because you'll need it — but because having it means you won't.\n- `journalctl -xb` is your best friend when things go sideways.\n\nNext time I'll update weekly. I say this every time."
+  },
+  {
+    slug: "first-entry-hello-world",
+    title: "Hello, world. Again.",
+    excerpt: "Starting a journal. Less manifesto, more sketchbook — what I'm building, breaking, and reading this week.",
+    date: "2026-04-25",
+    readingMinutes: 3,
+    tags: ["meta", "writing"],
+    content: "Every developer eventually starts a blog. Then deletes it. Then starts another one. This is mine — version *n* — and I'm trying something different: no audience, no SEO, no engagement metrics. Just notes from the workbench.\n\n## Why bother\n\nI forget things. A lot. Every time I solve a tricky shell problem or finally tame a Godot quirk, I tell myself I'll remember. I never do. So this is partly a second brain, partly an excuse to write more carefully than my git commit messages allow.\n\n## What you'll find here\n\n- **Build logs** — what I'm working on, what's stuck\n- **Linux notes** — Arch tips, dotfile experiments, terminal tooling\n- **3D & video** — Blender scenes, Resolve workflows, render disasters\n- **Reading** — books, papers, weird corners of the internet\n\n> The best software has both elegance under the hood and beauty on the surface.\n\nThat's the bar. See you in the next entry."
+  },
+  {
+    slug: "tuesday-tinkering-ptodo",
+    title: "Tuesday tinkering: ptodo gets a config file",
+    excerpt: "Spent the evening adding a TOML config to ptodo. Sounds small. Took four hours and one existential crisis.",
+    date: "2026-04-22",
+    readingMinutes: 5,
+    tags: ["python", "ptodo", "linux"],
+    content: "Today's quest: let users theme **ptodo** without recompiling. Should be trivial. It was not.\n\n## The plan\n\nA simple `~/.config/ptodo/config.toml` with colors, keybindings, and the date format. Read it once at startup, fall back to defaults, ship it.\n\n```toml\n[theme]\naccent = \"#e8b16a\"\nmuted = \"#9a9489\"\n\n[keys]\ntoggle = \"space\"\ndelete = \"d\"\n```\n\n## The reality\n\nPython's stdlib finally has `tomllib` (3.11+) — great. But curses doesn't care about hex colors. It wants `init_color` with values 0-1000. So now I'm writing a hex to curses-RGB converter at 1am. Classic.\n\n## What worked\n\nI cached the parsed config in a frozen dataclass and exposed a single `load_config()` entry point. No globals, no surprises.\n\n```python\n@dataclass(frozen=True)\nclass Config:\n    accent: tuple\n    muted: tuple\n    keys: object\n```\n\nTomorrow: writing tests for the fallback path. Or Blender. Probably Blender."
+  },
+  {
+    slug: "blender-donut-tax",
+    title: "Paying the Blender donut tax",
+    excerpt: "Twelve years late, I finally did the donut tutorial. Notes on what I learned and what I'd skip.",
+    date: "2026-04-18",
+    readingMinutes: 4,
+    tags: ["3d", "blender"],
+    content: "Everyone says you have to pay the **donut tax** before Blender clicks. They're not wrong.\n\n## What I underestimated\n\nGeometry is the easy part. The real lesson is in the *workflow* — how often you flip between edit mode and object mode, how shortcuts compound, how shading nodes feel like a tiny visual programming language wedged inside a 3D app.\n\n## What I'd skip\n\nThe intro setup videos. Just install Blender, set your theme, and start modeling. You'll find the buttons faster than you think.\n\n## What surprised me\n\nHow much **lighting** matters. A mediocre model under good lighting looks better than a great model under bad lighting. Three-point lighting is not a cliche — it's a survival skill.\n\nNext: low-poly diorama for the portfolio. A tiny Arch Linux desk scene, because of course."
+  }
+];
+
+// Helpers
+function getSortedPosts() {
+  return [...posts].sort((a, b) => (a.date < b.date ? 1 : -1));
+}
+function getPostBySlug(slug) {
+  return posts.find((p) => p.slug === slug);
+}
+function formatDate(iso) {
+  const d = new Date(iso + "T00:00:00");
+  return d.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+}
+
+// Markdown renderer
+function escapeHtml(s) {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+function inline(s) {
+  let out = escapeHtml(s);
+  out = out.replace(/`([^`]+)`/g, function(_, c) { return "<code>" + c + "</code>"; });
+  out = out.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  out = out.replace(/(^|[^*])\*([^*]+)\*/g, "$1<em>$2</em>");
+  out = out.replace(/\[([^\]]+)\]\(([^)]+)\)/g, function(_, t, u) {
+    return '<a href="' + u + '" target="_blank" rel="noopener noreferrer">' + t + "</a>";
+  });
+  return out;
+}
+function renderMarkdown(md) {
+  const lines = md.split("\n");
+  const html = [];
+  let i = 0;
+  let inList = null;
+  const closeList = function() {
+    if (inList) { html.push("</" + inList + ">"); inList = null; }
+  };
+  while (i < lines.length) {
+    const line = lines[i];
+    if (line.startsWith("```")) {
+      closeList();
+      const lang = line.slice(3).trim();
+      const buf = [];
+      i++;
+      while (i < lines.length && !lines[i].startsWith("```")) { buf.push(lines[i]); i++; }
+      i++;
+      html.push("<pre><code" + (lang ? ' class="lang-' + lang + '"' : "") + ">" + escapeHtml(buf.join("\n")) + "</code></pre>");
+      continue;
+    }
+    const hMatch = /^(#{1,4})\s+(.*)$/.exec(line);
+    if (hMatch) {
+      closeList();
+      const level = hMatch[1].length;
+      html.push("<h" + level + ">" + inline(hMatch[2]) + "</h" + level + ">");
+      i++; continue;
+    }
+    if (/^---+$/.test(line.trim())) {
+      closeList(); html.push("<hr/>"); i++; continue;
+    }
+    if (line.startsWith("> ")) {
+      closeList();
+      const buf = [];
+      while (i < lines.length && lines[i].startsWith("> ")) { buf.push(lines[i].slice(2)); i++; }
+      html.push("<blockquote>" + inline(buf.join(" ")) + "</blockquote>");
+      continue;
+    }
+    if (/^[-*]\s+/.test(line)) {
+      if (inList !== "ul") { closeList(); html.push("<ul>"); inList = "ul"; }
+      html.push("<li>" + inline(line.replace(/^[-*]\s+/, "")) + "</li>");
+      i++; continue;
+    }
+    if (/^\d+\.\s+/.test(line)) {
+      if (inList !== "ol") { closeList(); html.push("<ol>"); inList = "ol"; }
+      html.push("<li>" + inline(line.replace(/^\d+\.\s+/, "")) + "</li>");
+      i++; continue;
+    }
+    if (line.trim() === "") { closeList(); i++; continue; }
+    closeList();
+    const buf = [line]; i++;
+    while (i < lines.length && lines[i].trim() !== "" && !/^(#{1,4}\s|>\s|[-*]\s|\d+\.\s|```|---+$)/.test(lines[i])) {
+      buf.push(lines[i]); i++;
+    }
+    html.push("<p>" + inline(buf.join(" ")) + "</p>");
+  }
+  closeList();
+  return html.join("\n");
+}
+
+// Routing
+function showIndex() {
+  document.getElementById("page-index").classList.remove("hidden");
+  document.getElementById("page-post").classList.add("hidden");
+  document.getElementById("page-404").classList.add("hidden");
+  document.getElementById("nav-back").classList.add("hidden");
+  document.title = "Journal \u00b7 NVitschDEV \u2014 Notes from the workbench";
+  try { history.pushState(null, "", "/"); } catch(e) {}
+  renderIndex();
+}
+function showPost(slug) {
+  const post = getPostBySlug(slug);
+  if (!post) { show404(); return; }
+  document.getElementById("page-index").classList.add("hidden");
+  document.getElementById("page-post").classList.remove("hidden");
+  document.getElementById("page-404").classList.add("hidden");
+  document.getElementById("nav-back").classList.remove("hidden");
+  document.title = post.title + " \u00b7 NVitschDEV Journal";
+  try { history.pushState(null, "", "/post/" + slug); } catch(e) {}
+  window.scrollTo({ top: 0, behavior: "instant" });
+  renderPost(post);
+}
+function show404() {
+  document.getElementById("page-index").classList.add("hidden");
+  document.getElementById("page-post").classList.add("hidden");
+  document.getElementById("page-404").classList.remove("hidden");
+  document.getElementById("nav-back").classList.add("hidden");
+}
+
+// Renderers
+function renderIndex() {
+  const sorted = getSortedPosts();
+  document.getElementById("entry-count").textContent = sorted.length + " entries";
+  document.getElementById("footer-year").textContent = "\u00a9 " + new Date().getFullYear() + " NVitschDEV";
+  const grid = document.getElementById("posts-grid");
+  grid.innerHTML = sorted.map(function(p, i) {
+    return '<div class="post-card anim-fade-up" style="animation-delay:' + (i * 90) + 'ms" onclick="showPost(\'' + p.slug + '\')">'
+      + '<div class="card-meta">'
+      + '<span class="card-index">' + String(i + 1).padStart(2, "0") + '</span>'
+      + '<span class="card-sep"></span>'
+      + '<time class="card-date">' + formatDate(p.date) + '</time>'
+      + '</div>'
+      + '<h2 class="card-title">' + escapeHtml(p.title) + '</h2>'
+      + '<p class="card-excerpt">' + escapeHtml(p.excerpt) + '</p>'
+      + '<div class="card-footer">'
+      + '<div class="card-tags">' + p.tags.map(function(t) { return '<span class="tag">' + escapeHtml(t) + '</span>'; }).join("") + '</div>'
+      + '<span class="card-read">' + p.readingMinutes + ' min read \u2192</span>'
+      + '</div></div>';
+  }).join("");
+}
+function renderPost(post) {
+  const all = getSortedPosts();
+  const idx = all.findIndex(function(p) { return p.slug === post.slug; });
+  const prev = all[idx + 1];
+  const next = all[idx - 1];
+  document.getElementById("post-header").innerHTML =
+    '<div class="post-meta-row"><time>' + formatDate(post.date) + '</time><span class="post-meta-sep"></span><span>' + post.readingMinutes + ' min read</span></div>'
+    + '<h1 class="post-title">' + escapeHtml(post.title) + '</h1>'
+    + '<p class="post-excerpt">' + escapeHtml(post.excerpt) + '</p>'
+    + '<div class="post-tags">' + post.tags.map(function(t) { return '<span class="tag">' + escapeHtml(t) + '</span>'; }).join("") + '</div>';
+  document.getElementById("post-body").innerHTML = renderMarkdown(post.content);
+  document.getElementById("post-pagination").innerHTML =
+    '<div>' + (prev ? '<div class="pagination-link" onclick="showPost(\'' + prev.slug + '\')" style="cursor:pointer"><p class="pagination-label">\u2190 previous</p><p class="pagination-title">' + escapeHtml(prev.title) + '</p></div>' : '<span></span>') + '</div>'
+    + '<div class="pagination-next">' + (next ? '<div class="pagination-link" onclick="showPost(\'' + next.slug + '\')" style="cursor:pointer"><p class="pagination-label">next \u2192</p><p class="pagination-title">' + escapeHtml(next.title) + '</p></div>' : '<span></span>') + '</div>';
+}
+
+// Init
+window.addEventListener("popstate", function() {
+  const match = location.pathname.match(/^\/post\/(.+)$/);
+  if (match) showPost(match[1]); else showIndex();
+});
+(function() {
+  const match = location.pathname.match(/^\/post\/(.+)$/);
+  if (match) showPost(match[1]); else showIndex();
+})();
+
+  </script>
+</body>
+</html>
