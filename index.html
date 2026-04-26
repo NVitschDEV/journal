@@ -155,26 +155,39 @@ body::after {
   padding-top: 1rem;
   padding-bottom: 1rem;
 }
-#nav-logo {
+.nav-logo {
   font-family: var(--font-display);
-  font-style: italic;
-  font-size: 1.125rem;
+  font-size: 1.15rem;
   font-weight: 500;
-  letter-spacing: -0.025em;
-  color: var(--foreground);
-  text-decoration: none;
-  transition: color var(--transition);
+  font-style: italic;
+  color: var(--text-1);
+  letter-spacing: -0.02em;
+  font-variation-settings: "opsz" 144;
 }
-#nav-logo:hover { color: var(--accent); }
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.nav-left a {
+  text-decoration: none;
+}
+
+.nav-logo:hover { color: var(--accent); }
+
+.nav-logo span { color: var(--accent); font-style: normal; font-weight: 400; }
+
 .nav-logo-accent { font-style: normal; font-weight: 400; color: var(--accent); }
 .nav-logo-sub {
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: var(--muted-foreground-deep);
-  margin-left: 0.5rem;
-  font-style: normal;
-  font-weight: 400;
-  letter-spacing: 0.1em;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 500;
+  font-style: italic;
+  color: var(--text-1);
+  letter-spacing: -0.02em;
+  font-variation-settings: "opsz" 144;
 }
 .nav-links { display: flex; align-items: center; gap: 2rem; }
 .nav-link {
@@ -530,9 +543,10 @@ body::after {
 
   <nav id="site-nav">
     <div class="container-editorial nav-inner">
-      <a href="#" id="nav-logo" onclick="showIndex(); return false;">
-        NVitsch<span class="nav-logo-accent">DEV</span><span class="nav-logo-sub">/ journal</span>
-      </a>
+      <div class="nav-left">
+        <a href='' class="nav-logo">NVitsch<span class="nav-logo-accent">DEV</span></a>
+        <a href="https://nvitschdev.github.io/journal" class="nav-logo-sub">/ Journal</a>
+      </div>
       <div class="nav-links">
         <a href="#" id="nav-back" onclick="showIndex(); return false;" class="nav-link hidden">← all entries</a>
         <a href="https://github.com/NVitschDEV" target="_blank" rel="noopener noreferrer" class="nav-link nav-link-github">github</a>
